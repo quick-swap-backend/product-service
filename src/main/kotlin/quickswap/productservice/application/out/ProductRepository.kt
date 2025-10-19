@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 interface ProductRepository: JpaRepository<Product, ProductId> {
 
   @EntityGraph(attributePaths = ["detail"])
-  fun findTop20ByProductStatusOrderByCreatedAtDesc(status: ProductStatus, pageable: Pageable): List<Product>
+  fun findByProductStatusOrderByCreatedAtDesc(status: ProductStatus, pageable: Pageable): List<Product>
 
   @EntityGraph(attributePaths = ["detail"])
   @Query(

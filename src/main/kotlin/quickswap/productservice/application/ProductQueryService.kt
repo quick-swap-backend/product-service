@@ -19,7 +19,7 @@ class ProductQueryService(
     val pageable = PageRequest.of(0, size + 1)
 
     val products = if (cursorTime == null) {
-      repository.findTop20ByProductStatusOrderByCreatedAtDesc(
+      repository.findByProductStatusOrderByCreatedAtDesc(
         ProductStatus.ON_SALE,
         pageable
       )
