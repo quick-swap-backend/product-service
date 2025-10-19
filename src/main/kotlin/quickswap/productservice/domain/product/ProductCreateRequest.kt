@@ -6,6 +6,7 @@ import java.time.LocalDate
 data class ProductCreateRequest(
   val title: String,
   val price: Money,
+  val category: ProductCategory,
   val detail: Detail,
 ) {
   data class Detail(
