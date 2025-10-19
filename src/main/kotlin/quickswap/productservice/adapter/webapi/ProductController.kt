@@ -11,6 +11,7 @@ import quickswap.productservice.adapter.webapi.dto.ProductCreateResponse
 import quickswap.productservice.application.dto.ProductFindOnScrollResponse
 import quickswap.productservice.application.`in`.ProductCreator
 import quickswap.productservice.application.`in`.ProductFinder
+import quickswap.productservice.domain.product.ProductCategory
 import quickswap.productservice.domain.product.ProductCreateRequest
 
 @RequestMapping("/api/v1")
@@ -29,9 +30,10 @@ class ProductController(
   @GetMapping("/public/product")
   fun getProductOnScroll(
     @RequestParam(required = false) cursorTime: Long?,
-    @RequestParam(defaultValue = "20") size: Int
+    @RequestParam(defaultValue = "20") size: Int,
+    @RequestParam(required = false) category: ProductCategory?
   ): ResponseEntity<ProductFindOnScrollResponse> {
-    return ResponseEntity.ok(productFinder.getProductsOnScroll(cursorTime, size))
+    return ResponseEntity.ok(productFinder.getProductsOnScroll(cursorTime, size, category))
   }
 
 }
