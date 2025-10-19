@@ -1,7 +1,6 @@
 package quickswap.productservice.application
 
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import quickswap.productservice.application.dto.ProductsFindResponse
 import quickswap.productservice.application.`in`.ProductFinder
@@ -24,9 +23,7 @@ class ProductQueryService(
     category: ProductCategory?
   ): ProductsFindResponse {
 
-    val products = getProductsByCursor(cursorTime, category, size)
-
-    val hasNext = productsHasNext(products, size)
+    val (products, hasNext) = getProductsByCursor(cursorTime, category, size)
 
     val nextCursor = if (hasNext) getNextCursor(products) else null
 
@@ -37,7 +34,7 @@ class ProductQueryService(
     )
   }
 
-  private fun getProductsByCursor(cursorTime: Long?, category: ProductCategory?, size: Int): List<Product> {
+  private fun getProductsByCursor(cursorTime: Long?, category: ProductCategory?, size: Int):  Pair<List<Product>, Boolean> {
     require(size in 1..100) { "size 가 너무 큽니다. $size" }
 
     val pageable = PageRequest.of(0, size + 1)
@@ -63,7 +60,7 @@ class ProductQueryService(
 
     val hasNext = productsHasNext(products, size)
     val resultProducts = if (hasNext) products.dropLast(1) else products
-    return resultProducts
+    return (resultProducts to hasNext)
   }
 
   private fun productsHasNext(products: List<Product>, sizeCondition: Int): Boolean {
