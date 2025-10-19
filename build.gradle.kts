@@ -37,7 +37,7 @@ dependencies {
   testImplementation("com.h2database:h2")
   testImplementation("io.mockk:mockk:1.14.6")
 
-  implementation("com.github.quick-swap-backend:commons:v0.0.4")
+  implementation("com.github.quick-swap-backend:commons:v0.0.10")
 }
 
 kotlin {
