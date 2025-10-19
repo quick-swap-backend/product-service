@@ -17,6 +17,7 @@ import quickswap.commons.domain.shared.id.ProductId
 import quickswap.commons.domain.shared.id.UserId
 import quickswap.commons.domain.shared.vo.Email
 import quickswap.commons.domain.shared.vo.Money
+import java.time.LocalDateTime
 
 @Table(name = "products")
 @Entity
@@ -45,7 +46,9 @@ class Product private constructor(
     orphanRemoval = true,
     fetch = FetchType.LAZY
   )
-  var detail: ProductDetail? = null
+  var detail: ProductDetail? = null,
+
+  var createdAt: LocalDateTime = LocalDateTime.now()
 
 ) {
 
