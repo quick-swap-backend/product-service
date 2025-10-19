@@ -2,11 +2,12 @@ package quickswap.productservice.application.dto
 
 import quickswap.commons.domain.shared.vo.Email
 import quickswap.commons.domain.shared.vo.Money
+import quickswap.productservice.domain.product.ProductCategory
 import quickswap.productservice.domain.product.ProductStatus
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-class ProductFindOnScrollResponse private constructor(
+class ProductsFindResponse private constructor(
   val products: List<Product>,
   val nextCursor: Long?,
   val hasNext: Boolean,
@@ -17,8 +18,8 @@ class ProductFindOnScrollResponse private constructor(
       products: List<quickswap.productservice.domain.product.Product>,
       nextCursor: Long?,
       hasNext: Boolean,
-    ): ProductFindOnScrollResponse {
-      return ProductFindOnScrollResponse(
+    ): ProductsFindResponse {
+      return ProductsFindResponse(
         products = Product.of(products),
         nextCursor = nextCursor,
         hasNext = hasNext,
@@ -31,6 +32,7 @@ class ProductFindOnScrollResponse private constructor(
     val title: String,
     val price: Money,
     val productStatus: ProductStatus,
+    val category: ProductCategory,
     val seller: Seller,
     val createdAt: LocalDateTime,
     val cursorTime: Long,
@@ -42,6 +44,7 @@ class ProductFindOnScrollResponse private constructor(
           title = product.title,
           price = product.price,
           productStatus = product.productStatus,
+          category = product.category,
           seller = Seller(product.seller.id.value, product.seller.email),
           createdAt = product.createdAt,
           cursorTime = product.createdAt

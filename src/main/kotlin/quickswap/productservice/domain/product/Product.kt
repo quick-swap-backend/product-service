@@ -37,6 +37,10 @@ class Product private constructor(
   @Column(name = "status", nullable = false)
   var productStatus: ProductStatus = ProductStatus.ON_SALE,
 
+  @Enumerated(EnumType.STRING)
+  @Column(name = "category", nullable = false)
+  var category: ProductCategory = ProductCategory.OTHER,
+
   @Embedded
   val seller: Seller,
 
@@ -68,7 +72,8 @@ companion object {
       id = ProductId(idProvider.provide()),
       title = request.title,
       price = request.price,
-      seller = Seller(sellerId, sellerEmail)
+      category = request.category,
+      seller = Seller(sellerId, sellerEmail),
     )
 
     product.detail = ProductDetail.of(product, request.detail)
