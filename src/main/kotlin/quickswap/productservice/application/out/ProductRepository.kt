@@ -12,12 +12,14 @@ import java.time.LocalDateTime
 
 interface ProductRepository: JpaRepository<Product, ProductId> {
 
-  @Query("""
+  @Query(
+    """
     select p from Product p
-    where p.productStatus = :status
+    where p.status = :status
     and (:category is null or p.category = :category)
     order by p.createdAt desc
-  """)
+  """
+  )
   fun findByProductStatusOrderByCreatedAtDesc(
     category: ProductCategory? = null,
     status: ProductStatus,
@@ -28,11 +30,12 @@ interface ProductRepository: JpaRepository<Product, ProductId> {
   @Query(
     """
     select p from Product p
-    where p.productStatus = :status
+    where p.status = :status
     and (:category is null or p.category = :category)
     and p.createdAt < :cursorTime
     order by p.createdAt desc
-    """)
+    """
+  )
   fun findByProductStatusWithCursor(
     category: ProductCategory? = null,
     status: ProductStatus,

@@ -1,6 +1,7 @@
 package quickswap.productservice.domain.product
 
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import quickswap.commons.domain.shared.id.UserId
 import quickswap.commons.domain.shared.vo.Email
 import quickswap.productservice.fixture.ProductFixture
@@ -9,11 +10,135 @@ import java.util.UUID
 class ProductTest {
 
   @Test
-  fun of() {
+  fun `상품이 생성되면 판매중 상태여야 한다`() {
     val request = ProductFixture.getProductCreateRequest()
     val idProvider = ProductFixture.getProductIdProvider()
-    val product = Product.of(idProvider, request, UserId(UUID.randomUUID().toString()), Email("test@test.com"))
+    val product = Product.of(
+      idProvider,
+      request,
+      UserId(UUID.randomUUID().toString()),
+      Email("test@test.com")
+    )
 
-    assert(product.productStatus == ProductStatus.ON_SALE)
+    assert(product.status == ProductStatus.ON_SALE)
+  }
+
+  @Test
+  fun `판매중 상품은 예약할 수 있다`() {
+    val product = createProduct()
+
+    product.reserved()
+
+    assert(product.status == ProductStatus.RESERVED)
+  }
+
+  @Test
+  fun `판매중이 아닌 상품은 예약할 수 없다`() {
+    val product = createProduct()
+    product.reserved()
+
+    assertThrows<IllegalArgumentException> {
+      product.reserved()
+    }
+  }
+
+  @Test
+  fun `예약중인 상품은 결제할 수 있다`() {
+    val product = createProduct()
+    product.reserved()
+
+    product.pay()
+
+    assert(product.status == ProductStatus.PAID)
+  }
+
+  @Test
+  fun `예약중이 아닌 상품은 결제할 수 없다`() {
+    val product = createProduct()
+
+    assertThrows<IllegalArgumentException> {
+      product.pay()
+    }
+  }
+
+  @Test
+  fun `결제 완료 상품은 환불 요청할 수 있다`() {
+    val product = createProduct()
+    product.reserved()
+    product.pay()
+
+    product.refundRequested()
+
+    assert(product.status == ProductStatus.REFUND_REQUESTED)
+  }
+
+  @Test
+  fun `환불 요청 상태에서 환불을 거절하면 결제 완료 상태로 돌아간다`() {
+    val product = createProduct()
+    product.reserved()
+    product.pay()
+    product.refundRequested()
+
+    product.rejectRefund()
+
+    assert(product.status == ProductStatus.PAID)
+  }
+
+  @Test
+  fun `환불 요청 상태에서 환불 완료할 수 있다`() {
+    val product = createProduct()
+    product.reserved()
+    product.pay()
+    product.refundRequested()
+
+    product.refunded()
+
+    assert(product.status == ProductStatus.REFUNDED)
+  }
+
+  @Test
+  fun `결제 완료 상품은 거래 완료할 수 있다`() {
+    val product = createProduct()
+    product.reserved()
+    product.pay()
+
+    product.completed()
+
+    assert(product.status == ProductStatus.COMPLETED)
+  }
+
+  @Test
+  fun `판매중 또는 예약중 상품만 삭제할 수 있다`() {
+    val product1 = createProduct()
+    val product2 = createProduct()
+    product2.reserved()
+
+    product1.delete()
+    product2.delete()
+
+    assert(product1.status == ProductStatus.DELETED)
+    assert(product2.status == ProductStatus.DELETED)
+  }
+
+  @Test
+  fun `결제 완료 상품은 삭제할 수 없다`() {
+    val product = createProduct()
+    product.reserved()
+    product.pay()
+
+    assertThrows<IllegalArgumentException> {
+      product.delete()
+    }
+  }
+
+  private fun createProduct(): Product {
+    val request = ProductFixture.getProductCreateRequest()
+    val idProvider = ProductFixture.getProductIdProvider()
+    return Product.of(
+      idProvider,
+      request,
+      UserId(UUID.randomUUID().toString()),
+      Email("test@test.com")
+    )
   }
 }

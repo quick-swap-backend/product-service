@@ -35,7 +35,7 @@ class Product private constructor(
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false)
-  var productStatus: ProductStatus = ProductStatus.ON_SALE,
+  var status: ProductStatus = ProductStatus.ON_SALE,
 
   @Enumerated(EnumType.STRING)
   @Column(name = "category", nullable = false)
@@ -56,31 +56,73 @@ class Product private constructor(
 
 ) {
 
-  fun createDetail(detail: ProductCreateRequest.Detail) {
+  fun reserved() {
+    require(status == ProductStatus.ON_SALE)
+    { "거래 신청은 판매중인 상품만 가능합니다. id: ${id.value}" }
+    status = ProductStatus.RESERVED
+  }
+
+  fun pay() {
+    require(status == ProductStatus.RESERVED)
+    { "결제는 예약 중인 상품만 가능합니다. id: ${id.value}" }
+    status = ProductStatus.PAID
+  }
+
+  fun rejectRefund() {
+    require(status == ProductStatus.REFUND_REQUESTED)
+    { "환불 거절은 환불 요청 상태의 상품만 가능합니다. id: ${id.value}" }
+    status = ProductStatus.PAID
+  }
+
+  fun completed() {
+    require(status == ProductStatus.PAID)
+    { "거래 완료는 지불이 완료 된 상품만 가능합니다. id: ${id.value}" }
+    status = ProductStatus.COMPLETED
+  }
+
+  fun refundRequested() {
+    require(status == ProductStatus.PAID)
+    { "환불 요청은 지불 완료 상태에서만 가능합니다. id: ${id.value}" }
+    status = ProductStatus.REFUND_REQUESTED
+  }
+
+  fun refunded() {
+    require(status == ProductStatus.REFUND_REQUESTED)
+    { "환불 완료는 환불 요청상태의 상품만 가능합니다. id: ${id.value}" }
+    status = ProductStatus.REFUNDED
+  }
+
+  fun delete() {
+    require(status in listOf(ProductStatus.ON_SALE, ProductStatus.RESERVED))
+    { "거래 취소는 판매중 혹은 예약 중인 상품만 가능합니다. id: ${id.value}" }
+    status = ProductStatus.DELETED
+  }
+
+  private fun createDetail(detail: ProductCreateRequest.Detail) {
     val detail = ProductDetail.of(this, detail)
     this.detail = detail
   }
 
-companion object {
-  fun of(
-    idProvider: IdProvider,
-    request: ProductCreateRequest,
-    sellerId: UserId,
-    sellerEmail: Email
-  ): Product {
-    val product = Product(
-      id = ProductId(idProvider.provide()),
-      title = request.title,
-      price = request.price,
-      category = request.category,
-      seller = Seller(sellerId, sellerEmail),
-    )
+  companion object {
+    fun of(
+      idProvider: IdProvider,
+      request: ProductCreateRequest,
+      sellerId: UserId,
+      sellerEmail: Email
+    ): Product {
+      val product = Product(
+        id = ProductId(idProvider.provide()),
+        title = request.title,
+        price = request.price,
+        category = request.category,
+        seller = Seller(sellerId, sellerEmail),
+      )
 
-    product.detail = ProductDetail.of(product, request.detail)
+      product.createDetail(detail = request.detail)
 
-    return product
+      return product
+    }
   }
-}
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
