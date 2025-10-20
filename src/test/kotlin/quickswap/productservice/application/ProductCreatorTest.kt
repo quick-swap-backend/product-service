@@ -14,8 +14,9 @@ import quickswap.productservice.application.out.ProductRepository
 import quickswap.productservice.domain.product.ProductCreateRequest
 import quickswap.productservice.fixture.ProductFixture
 import java.util.UUID
+import kotlin.test.assertEquals
 
-class ProductModifyServiceTest {
+class ProductCreatorTest {
   val repository: ProductRepository = mockk()
   val authContext: AuthenticationContext = mockk()
   val idProvider: IdProvider = mockk()
@@ -36,10 +37,10 @@ class ProductModifyServiceTest {
     val createdProduct = service.createProduct(request)
 
     assertNotNull(createdProduct)
-    assert(request.title == createdProduct.title)
-    assert(request.price == createdProduct.price)
-    assert(productId == createdProduct.id.value)
-    assert(userId == createdProduct.seller.id)
+    assertEquals(request.title, createdProduct.title)
+    assertEquals(request.price, createdProduct.price)
+    assertEquals(productId, createdProduct.id.value)
+    assertEquals(userId, createdProduct.seller.id)
 
     verify(exactly = 1) { repository.save(any()) }
   }

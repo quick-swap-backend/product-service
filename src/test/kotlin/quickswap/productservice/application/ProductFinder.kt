@@ -7,16 +7,17 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.data.domain.PageRequest
 import quickswap.commons.domain.shared.id.ProductId
+import quickswap.productservice.application.`in`.ProductFinder
 import quickswap.productservice.application.out.ProductRepository
 import quickswap.productservice.domain.product.Product
 import quickswap.productservice.domain.product.ProductStatus
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-class ProductQueryServiceTest {
+class ProductFinder {
 
   val repository: ProductRepository = mockk()
-  val service = ProductQueryService(repository)
+  val service: ProductFinder = ProductQueryService(repository)
 
   @Test
   fun `첫 페이지 조회 - 다음 페이지가 있는 경우`() {
@@ -40,7 +41,7 @@ class ProductQueryServiceTest {
 
     val result = service.findProducts(cursorTime = null, size = size, category = null)
 
-    assert(result.products.size == 10)
+    assertEquals(10, result.products.size)
     assertTrue { result.hasNext }
     assertNotNull(result.nextCursor)
   }
@@ -67,7 +68,7 @@ class ProductQueryServiceTest {
 
     val result = service.findProducts(cursorTime = null, size = size, category = null)
 
-    assert(result.products.size == 10)
+    assertEquals(10, result.products.size)
     assertFalse { result.hasNext }
     assertNull(result.nextCursor)
   }
@@ -103,8 +104,8 @@ class ProductQueryServiceTest {
       .toInstant()
       .toEpochMilli()
 
-    assert(result.nextCursor == expectedCursor)
-    assert(result.products.size == size)
+    assertEquals(result.nextCursor, expectedCursor)
+    assertEquals(result.products.size, size)
   }
 
   @Test
