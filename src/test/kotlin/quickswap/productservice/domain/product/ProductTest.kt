@@ -108,26 +108,62 @@ class ProductTest {
   }
 
   @Test
-  fun `판매중 또는 예약중 상품만 삭제할 수 있다`() {
-    val product1 = createProduct()
-    val product2 = createProduct()
-    product2.reserved()
+  fun `판매자는 판매중인 상품만 취소할 수 있다`() {
+    val product = createProduct()
 
-    product1.delete()
-    product2.delete()
+    product.cancelBySeller()
 
-    assert(product1.status == ProductStatus.DELETED)
-    assert(product2.status == ProductStatus.DELETED)
+    assert(product.status == ProductStatus.DELETED)
   }
 
   @Test
-  fun `결제 완료 상품은 삭제할 수 없다`() {
+  fun `판매자는 예약중인 상품을 취소할 수 없다`() {
+    val product = createProduct()
+    product.reserved()
+
+    assertThrows<IllegalArgumentException> {
+      product.cancelBySeller()
+    }
+  }
+
+  @Test
+  fun `거래 취소는 예약중인 상품만 가능하다`() {
+    val product = createProduct()
+    product.reserved()
+
+    product.cancelByTrade()
+
+    assert(product.status == ProductStatus.DELETED)
+  }
+
+  @Test
+  fun `거래 취소는 판매중인 상품에 대해 불가능하다`() {
+    val product = createProduct()
+
+    assertThrows<IllegalArgumentException> {
+      product.cancelByTrade()
+    }
+  }
+
+  @Test
+  fun `결제 완료 상품은 판매자가 취소할 수 없다`() {
     val product = createProduct()
     product.reserved()
     product.pay()
 
     assertThrows<IllegalArgumentException> {
-      product.delete()
+      product.cancelBySeller()
+    }
+  }
+
+  @Test
+  fun `결제 완료 상품은 거래 취소할 수 없다`() {
+    val product = createProduct()
+    product.reserved()
+    product.pay()
+
+    assertThrows<IllegalArgumentException> {
+      product.cancelByTrade()
     }
   }
 

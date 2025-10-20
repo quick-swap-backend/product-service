@@ -92,9 +92,15 @@ class Product private constructor(
     status = ProductStatus.REFUNDED
   }
 
-  fun delete() {
-    require(status in listOf(ProductStatus.ON_SALE, ProductStatus.RESERVED))
-    { "거래 취소는 판매중 혹은 예약 중인 상품만 가능합니다. id: ${id.value}" }
+  fun cancelBySeller() {
+    require(status == ProductStatus.ON_SALE)
+    { "판매자는 판매중인 상품만 취소할 수 있습니다. id: ${id.value}" }
+    status = ProductStatus.DELETED
+  }
+
+  fun cancelByTrade() {
+    require(status == ProductStatus.RESERVED)
+    { "거래 취소는 예약 중인 상품만 가능합니다. id: ${id.value}" }
     status = ProductStatus.DELETED
   }
 
