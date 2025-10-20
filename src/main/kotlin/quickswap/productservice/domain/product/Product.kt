@@ -1,16 +1,6 @@
 package quickswap.productservice.domain.product
 
-import jakarta.persistence.CascadeType
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Embedded
-import jakarta.persistence.EmbeddedId
-import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
-import jakarta.persistence.FetchType
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import quickswap.commons.adapter.shared.persistence.converter.MoneyConverter
 import quickswap.commons.domain.shared.IdProvider
 import quickswap.commons.domain.shared.id.ProductId
@@ -92,9 +82,15 @@ class Product private constructor(
     status = ProductStatus.REFUNDED
   }
 
-  fun delete() {
-    require(status in listOf(ProductStatus.ON_SALE, ProductStatus.RESERVED))
-    { "거래 취소는 판매중 혹은 예약 중인 상품만 가능합니다. id: ${id.value}" }
+  fun deleteBySeller() {
+    require(status == ProductStatus.ON_SALE)
+    { "판매자는 판매중인 상품만 취소할 수 있습니다. id: ${id.value}" }
+    status = ProductStatus.DELETED
+  }
+
+  fun cancelByTrade() {
+    require(status == ProductStatus.RESERVED)
+    { "거래 취소는 예약 중인 상품만 가능합니다. id: ${id.value}" }
     status = ProductStatus.DELETED
   }
 
