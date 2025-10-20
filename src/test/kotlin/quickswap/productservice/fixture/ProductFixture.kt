@@ -2,6 +2,7 @@ package quickswap.productservice.fixture
 
 import quickswap.commons.domain.shared.IdProvider
 import quickswap.commons.domain.shared.vo.Money
+import quickswap.productservice.domain.product.ProductCategory
 import quickswap.productservice.domain.product.ProductCreateRequest
 import java.time.LocalDate
 import java.util.UUID
@@ -18,7 +19,8 @@ class ProductFixture {
       return ProductCreateRequest(
         title = "침대 팔아요",
         price = Money.of(10_000L),
-        detail = detail
+        category = ProductCategory.FURNITURE,
+        detail = detail,
       )
     }
 
