@@ -4,6 +4,9 @@ import quickswap.commons.domain.shared.id.ProductId
 
 interface ProductUpdater {
 
-  fun delete(id: ProductId): ProductId
+  fun deleteBySeller(id: ProductId): ProductId
 
+  fun cancelByTrade(id: ProductId): ProductId
+
+  fun restoreToReserved(id: ProductId): ProductId
 }

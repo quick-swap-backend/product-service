@@ -28,14 +28,30 @@ class ProductModifyService(
     return repository.save(product)
   }
 
-  override fun delete(id: ProductId): ProductId {
-    val foundProduct = repository.findById(id)
-      .orElseThrow { IllegalArgumentException("Product 를 찾을 수 없습니다. id: ${id.value}") }
+  override fun deleteBySeller(id: ProductId): ProductId {
+    val foundProduct = findByIdOrThrow(id)
 
     require(authContext.getCurrentUserId() == foundProduct.seller.id) { "작성자만 삭제 할 수 있습니다." }
 
     foundProduct.deleteBySeller()
 
     return foundProduct.id
+  }
+
+  override fun cancelByTrade(id: ProductId): ProductId {
+    val foundProduct = findByIdOrThrow(id)
+
+    foundProduct.cancelByTrade()
+
+    return foundProduct.id
+  }
+
+  override fun restoreToReserved(id: ProductId): ProductId {
+    TODO("Not yet implemented")
+  }
+
+  private fun findByIdOrThrow(id: ProductId): Product {
+    return repository.findById(id)
+      .orElseThrow { IllegalArgumentException("Product 를 찾을 수 없습니다. id: ${id.value}") }
   }
 }

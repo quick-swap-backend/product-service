@@ -18,9 +18,23 @@ spring:
       hibernate:
         format_sql: true
         use_sql_comments: true
+
+  # https://docs.temporal.io/develop/java/spring-boot-integration
+  temporal:
+    connection:
+      target: localhost:7233
+    workers:
+      - task-queue: trade-task-queue
+        name: product-worker
+        activity-beans:
+          - productActivityImpl
+
 jwt:
   secret: thisisjwttokensecretkeythisisjwttokensecretkeythisisjwttokensecretkeythisisjwttokensecretkey
   access-token:
     validity-second: 3600
   refresh-token:
     validity-second: 86400
+
+kafka:
+  bootstrap-servers: localhost:9092

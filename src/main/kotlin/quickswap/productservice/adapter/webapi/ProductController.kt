@@ -42,7 +42,7 @@ class ProductController(
 
   @DeleteMapping("/product")
   fun delete(@RequestParam(required = true) id: String): ResponseEntity<String> {
-    val productId = updater.delete(ProductId(id))
+    val productId = updater.deleteBySeller(ProductId(id))
     return ResponseEntity.ok(productId.value)
   }
 

@@ -26,10 +26,15 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-web")
   implementation("org.springframework.boot:spring-boot-starter-security")
+  implementation("org.springframework.kafka:spring-kafka")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+  implementation("io.temporal:temporal-sdk:1.31.0")
+  implementation ("io.temporal:temporal-spring-boot-starter:1.31.0")
 
   runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
   developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 
+  testImplementation("org.springframework.kafka:spring-kafka-test")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
   testImplementation("org.springframework.security:spring-security-test")
@@ -37,7 +42,7 @@ dependencies {
   testImplementation("com.h2database:h2")
   testImplementation("io.mockk:mockk:1.14.6")
 
-  implementation("com.github.quick-swap-backend:commons:v0.0.10")
+  implementation("com.github.quick-swap-backend:commons:v0.0.11")
 }
 
 kotlin {
