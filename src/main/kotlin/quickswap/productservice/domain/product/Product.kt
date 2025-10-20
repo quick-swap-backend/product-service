@@ -92,7 +92,7 @@ class Product private constructor(
     status = ProductStatus.REFUNDED
   }
 
-  fun cancelBySeller() {
+  fun deleteBySeller() {
     require(status == ProductStatus.ON_SALE)
     { "판매자는 판매중인 상품만 취소할 수 있습니다. id: ${id.value}" }
     status = ProductStatus.DELETED

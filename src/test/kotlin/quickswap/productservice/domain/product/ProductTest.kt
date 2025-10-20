@@ -111,7 +111,7 @@ class ProductTest {
   fun `판매자는 판매중인 상품만 취소할 수 있다`() {
     val product = createProduct()
 
-    product.cancelBySeller()
+    product.deleteBySeller()
 
     assert(product.status == ProductStatus.DELETED)
   }
@@ -122,7 +122,7 @@ class ProductTest {
     product.reserved()
 
     assertThrows<IllegalArgumentException> {
-      product.cancelBySeller()
+      product.deleteBySeller()
     }
   }
 
@@ -152,7 +152,7 @@ class ProductTest {
     product.pay()
 
     assertThrows<IllegalArgumentException> {
-      product.cancelBySeller()
+      product.deleteBySeller()
     }
   }
 
