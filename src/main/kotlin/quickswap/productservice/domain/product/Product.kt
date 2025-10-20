@@ -1,16 +1,6 @@
 package quickswap.productservice.domain.product
 
-import jakarta.persistence.CascadeType
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Embedded
-import jakarta.persistence.EmbeddedId
-import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
-import jakarta.persistence.FetchType
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import quickswap.commons.adapter.shared.persistence.converter.MoneyConverter
 import quickswap.commons.domain.shared.IdProvider
 import quickswap.commons.domain.shared.id.ProductId
