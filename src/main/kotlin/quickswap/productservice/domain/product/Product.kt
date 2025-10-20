@@ -52,7 +52,7 @@ class Product private constructor(
   )
   var detail: ProductDetail? = null,
 
-  var createdAt: LocalDateTime = LocalDateTime.now()
+  val createdAt: LocalDateTime = LocalDateTime.now()
 
 ) {
 
