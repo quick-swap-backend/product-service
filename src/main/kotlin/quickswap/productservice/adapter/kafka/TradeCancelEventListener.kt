@@ -2,9 +2,9 @@ package quickswap.productservice.adapter.kafka
 
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
-import quickswap.commons.adapter.shared.kafka.KafkaGroupIds.PRODUCT_UPDATER
 import quickswap.commons.adapter.shared.kafka.KafkaTopics.TRADE_CANCELED
 import quickswap.commons.domain.shared.id.ProductId
+import quickswap.productservice.adapter.kafka.KafkaGroupIds.PRODUCT_UPDATER
 import quickswap.productservice.application.`in`.ProductUpdater
 
 @Component
