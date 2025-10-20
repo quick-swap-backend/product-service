@@ -43,7 +43,7 @@ class ProductsFindResponse private constructor(
           id = product.id.value,
           title = product.title,
           price = product.price,
-          productStatus = product.productStatus,
+          productStatus = product.status,
           category = product.category,
           seller = Seller(product.seller.id.value, product.seller.email),
           createdAt = product.createdAt,
