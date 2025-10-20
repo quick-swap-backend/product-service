@@ -7,6 +7,7 @@ import quickswap.commons.domain.shared.IdProvider
 import quickswap.commons.domain.shared.id.ProductId
 import quickswap.productservice.application.`in`.ProductCreator
 import quickswap.productservice.application.`in`.ProductUpdater
+import quickswap.productservice.application.out.OutboxHandler
 import quickswap.productservice.application.out.ProductRepository
 import quickswap.productservice.domain.product.Product
 import quickswap.productservice.domain.product.ProductCreateRequest
@@ -17,6 +18,7 @@ class ProductModifyService(
   private val repository: ProductRepository,
   private val authContext: AuthenticationContext,
   private val idProvider: IdProvider,
+  private val outboxHandler: OutboxHandler,
 ): ProductCreator, ProductUpdater {
 
   override fun createProduct(request: ProductCreateRequest): Product {
@@ -25,7 +27,10 @@ class ProductModifyService(
 
     val product = Product.of(idProvider, request, userId, userEmail)
 
-    return repository.save(product)
+    val saved = repository.save(product)
+    outboxHandler.execute(saved)
+
+    return saved
   }
 
   override fun deleteBySeller(id: ProductId): ProductId {
